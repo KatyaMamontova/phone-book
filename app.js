@@ -1,41 +1,44 @@
 const express = require('express');
 const app = express();
-const { NAME, PORT } = require('./public/config.js');
+const port = 3000;
+var server = require('http').Server(app);
+//const { NAME, PORT } = require('config.js');
+app.use(express.static(__dirname + '/public'));
+server.listen(port, () => console.log('it\'s aLIvEEEEEE'));
 
-let i = 0;
-app.get('/bla/:man/:woman', (req, res) => {//http://localhost:3000/bla/petya/mila
+/* app.get('/bla/:man/:woman', (req, res) => {//http://localhost:3000/bla/petya/mila
     const { man, woman } = req.params;//присваеваем переменным имена которые впишем в гетовое строке
     res.send('ok');
-});
+}); */
 
 const phones = [
     {
         name: 'Scarlet',
-        phone: 354545443
+        phone: '89128762312'
     },
     {
         name: 'Grandma',
-        phone: 354545443
+        phone: '89227663510'
     },
     {
         name: 'Santa',
-        phone: 354545443
+        phone: '89070064147'
     },
     {
-        name: 'Michael',
-        phone: 354545443
+        name: 'Michael Scarn',
+        phone: '87179001234'
     },
     {
         name: 'guy',
-        phone: 354545443
+        phone: '89198002143'
     },
     {
         name: 'Jesus',
-        phone: 354545443
+        phone: '89102533123'
     },
     {
         name: 'plumber',
-        phone: 354545443
+        phone: '89122583100'
     },
 ];
 
@@ -61,14 +64,4 @@ app.get('/phone/validate/:number', (req, res) => {
     }
 });
 
-app.get('/bla', (req, res) => {//это запрос с названием bla гетовый 
-    console.log(req.query);
-    res.send('ok');
-});
-
-app.get('/*', (req, res) => {// /* будет отвечать на все запросы 
-    i++;
-    res.send(`ля ля ля ${i}`);
-});
-
-app.listen(3000, () => console.log('все ок, работаем'));
+//app.listen(port, () => console.log('все ок, работаем'));
