@@ -39,9 +39,10 @@ const phones = [
     },
 ];
 
-app.get('/phone-book', (req, res) => {
+app.get('/phoneBook', (req, res) => {
     //for (let i = 0; i < phones.length; i++)
     res.send( phones[0].name
+        
         /* phones.forEach(elem => {
         elem.name;
     }) */
