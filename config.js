@@ -1,4 +1,5 @@
 const CONFIG = {
     NAME: 'test Is-21 App',
-    PORT: 3000
+    PORT: 3005
 }
+module.exports = CONFIG;

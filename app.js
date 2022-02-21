@@ -1,67 +1,79 @@
 const express = require('express');
+const { NAME, PORT } = require('./config.js');
+const PhoneBook = require('./phoneBook.js');
 const app = express();
-const port = 3000;
-var server = require('http').Server(app);
-//const { NAME, PORT } = require('config.js');
-app.use(express.static(__dirname + '/public'));
-server.listen(port, () => console.log('it\'s aLIvEEEEEE'));
+app.use(express.static('public'));
 
-/* app.get('/bla/:man/:woman', (req, res) => {//http://localhost:3000/bla/petya/mila
-    const { man, woman } = req.params;//присваеваем переменным имена которые впишем в гетовое строке
-    res.send('ok');
-}); */
-
-const phones = [
+const contacts = [
     {
         name: 'Scarlet',
-        phone: '89128762312'
+        number: '89128762312'
     },
     {
         name: 'Grandma',
-        phone: '89227663510'
+        number: '89227663510'
     },
     {
         name: 'Santa',
-        phone: '89070064147'
+        number: '89070064147'
     },
     {
         name: 'Michael Scarn',
-        phone: '87179001234'
+        number: '87179001234'
     },
     {
         name: 'guy',
-        phone: '89198002143'
+        number: '89198002143'
     },
     {
         name: 'Jesus',
-        phone: '89102533123'
+        number: '89102533123'
     },
     {
         name: 'plumber',
-        phone: '89122583100'
+        number: '89122583100'
     },
 ];
 
+const phoneBook = new PhoneBook(contacts);
+
 app.get('/phoneBook', (req, res) => {
-    //for (let i = 0; i < phones.length; i++)
-    res.send( phones[0].name
-        
-        /* phones.forEach(elem => {
-        elem.name;
-    }) */
-    );
+    res.send({ contacts });
 });
 
-
-
-app.get('/phone/validate/:number', (req, res) => {
-    const number = req.params.number.toString();
-    if ((number.length == 11 && number.substr(0, 2) == '89')
-        || ((number.length == 12) && number.substr(0, 3) == '+79')) {
-        res.send('VALID');
-    } else {
-        res.send('invalid')
-    }
+app.get('/phoneBook/addNumber/:name/:number', (req, res) => {
+    let name = req.params.name;
+    let number = req.params.number;
+    let convertedNumber = phoneBook.convertStrToNumber(number);
+    if (convertedNumber && name != '') {
+        if (phoneBook.validateNumber(convertedNumber)) {
+            phoneBook.addNumber(name, convertedNumber);
+            res.send({ answer: `Создан новый контакт: ${name}, ${number}` });
+        } else res.send({ error: 'invalid number' });
+    } else res.send({ error: 'incorrect input' });
 });
 
-//app.listen(port, () => console.log('все ок, работаем'));
+app.get('/phoneBook/deleteNumber/:prop', (req, res) => {
+    let prop = req.params.prop;
+    convertedNumber = phoneBook.convertStrToNumber(prop);
+    if (convertedNumber) {
+        if (phoneBook.deleteNumber(prop, 'number')) {
+            res.send({ answer: 'Контакт удален' });
+        }
+    } else if (phoneBook.deleteNumber(prop, 'name')) {
+        res.send({ answer: 'Контакт удален' });
+    } else res.send({ error: 'Контакт не найден' });
+});
+
+app.get('/phoneBook/validate/:number', (req, res) => {
+    let number = req.params.number;
+    let convertedNumber = phoneBook.convertStrToNumber(number);
+    console.log(convertedNumber);
+    if (convertedNumber) {
+        if (phoneBook.validateNumber(convertedNumber)) {
+            res.send({ answer: 'valid' });
+        } else res.send({ answer: 'invalid' });
+    } else res.send({ error: 'incorrect input' });
+});
+
+app.listen(PORT, () => console.log('все ок, работаем'));
